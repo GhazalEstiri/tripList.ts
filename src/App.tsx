@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import "./App.css";
-import Home from "./Page/Home";
+import Home from "./Page/Home.js";
 import { BrowserRouter, Route, Routes } from "react-router";
-import CountryDetail from "./Page/CountryDetail";
-import FavePage from "./Page/FavoritePage";
-import Login from "./Page/Login";
-import Countries from "./Page/Country";
-import Profile from "./Page/Profile";
-import MyTrip from "./Page/MyTrip";
-import TripDetail from "./Page/TripDetail";
+import CountryDetail from "./Page/CountryDetail.js";
+import FavePage from "./Page/FavoritePage.js";
+import Login from "./Page/Login.js";
+import Countries from "./Page/Country.js";
+import Profile from "./Page/Profile.js";
+import MyTrip from "./Page/MyTrip.js";
+import TripDetail from "./Page/TripDetail.js";
 import { useReducer } from "react";
-import { initialState, tripReducer } from "./Reducer/tripReducer";
+import { initialState, tripReducer } from "./Reducer/tripReducer.js";
 function App() {
   const [state, dispatch] = useReducer(
     tripReducer,

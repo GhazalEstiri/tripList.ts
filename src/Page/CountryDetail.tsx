@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router";
-import { getWeather } from "../Services/Api";
-import { FavoriteContext } from "../Context/Favorite";
+import { getWeather } from "../Services/Api.js";
+import { FavoriteContext } from "../Context/Favorite.js";
 import {
   Heart,
   MapPin,
@@ -12,18 +12,46 @@ import {
   BadgeDollarSign,
   Wind,
 } from "lucide-react";
+
+interface Country {
+  name: string;
+  flags: {
+    png: string;
+  };
+  latlng: [number,number];
+  region: string;
+  capital: string;
+  population: number;
+  area: number;
+  languages: {
+    name: string;
+  }[];
+  currencies: {
+    name: string;
+  }[];
+}
+interface Weather {
+  latitude: number;
+  longitude: number;
+  current: {
+    temperature_2m: number;
+    weather_code: number;
+    wind_speed_10m: number;
+  };
+}
+
 function CountryDetail() {
-  const [weather, setWeather] = useState(null);
+  const [weather, setWeather] = useState<Weather | null>(null);
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const selectedCountry = location.state;
+  const selectedCountry = location.state as Country;
 
   const { favorite, addFavorite, showLoginModal, setShowLoginModal } =
     useContext(FavoriteContext);
 
-  const isFavorite = favorite.some((item) => {
+  const isFavorite = favorite?.some((item) => {
     return (
       item.latlng &&
       selectedCountry?.latlng &&
@@ -32,7 +60,7 @@ function CountryDetail() {
     );
   });
 
-  async function handleClickCountry(selectedCountry) {
+  async function handleClickCountry(selectedCountry: Country) {
     try {
       setLoading(true);
       setError("");
@@ -60,10 +88,10 @@ function CountryDetail() {
       addFavorite(selectedCountry);
     }
     if (!isFavorite && showLoginModal) {
-      document.getElementById("my_modal_1").showModal();
+      (document.getElementById("my_modal_1") as HTMLDialogElement).showModal();
     }
   }
-  function getWeatherStatus(code) {
+  function getWeatherStatus(code: number) {
     if (code === 0) return "Clear Sky";
     if (code === 1) return "Mainly Clear";
     if (code === 2) return "Partly Cloudy";
@@ -143,7 +171,7 @@ function CountryDetail() {
                     <UserGroup className="text-[#1D4362]" />
                   </p>
                   <div className="flex flex-col justify-center gap-1   text-[#1D4362] lg:text-base text-sm">
-                    <p className="flex flex-row font-bold " >population</p>
+                    <p className="flex flex-row font-bold ">population</p>
                     <p className="font-medium">{selectedCountry.population}</p>
                   </div>
                 </div>
@@ -164,7 +192,7 @@ function CountryDetail() {
                   <div className="flex flex-col justify-center gap-1  text-[#1D4362] lg:text-base text-sm">
                     <p className="flex flex-row  font-bold">languages</p>
                     <p className="font-medium">
-                      {selectedCountry.languages[0].name}
+                      {selectedCountry.languages[0]?.name}
                     </p>
                   </div>
                 </div>
@@ -175,7 +203,7 @@ function CountryDetail() {
                   <div className="flex flex-col justify-center gap-1  text-[#1D4362]">
                     <p className="flex flex-row  font-bold">currencies</p>
                     <p className="font-medium">
-                      {selectedCountry.currencies[0].name}
+                      {selectedCountry.currencies[0]?.name}
                     </p>
                   </div>
                 </div>

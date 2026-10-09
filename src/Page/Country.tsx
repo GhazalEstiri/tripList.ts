@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
-import { getCountry, searchCountry } from "../Services/Api";
+import { getCountry, searchCountry } from "../Services/Api.js";
 import { useNavigate } from "react-router";
-import Navbar from "./Navbar";
+import Navbar from "./Navbar.js";
 import { ChevronRight, Search } from "lucide-react";
+interface Country {
+  name: string;
+  flags: {
+    png: string;
+  };
+}
+
 function Countries() {
-  const [country, setCountry] = useState([]);
+  const [country, setCountry] = useState<Country[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pages = 10;
@@ -25,7 +32,7 @@ function Countries() {
   const pageNumber = Array.from({ length: pages }, (v, i) => i + 1);
   console.log(pageNumber);
 
-  function handleClick(item) {
+  function handleClick(item: Country) {
     navigate("/CountryDetail", {
       state: item,
     });

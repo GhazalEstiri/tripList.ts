@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { loginContext } from "../Context/AuthContext";
+import React, { useContext, useState } from "react";
+import { loginContext } from "../Context/AuthContext.js";
 import { useNavigate } from "react-router";
 import {
   LockKeyhole,
@@ -26,7 +26,7 @@ function Login() {
   const { user, logout, login } = useContext(loginContext);
   const navigate = useNavigate();
 
-  const handleInputs = (e) => {
+  const handleInputs = (e:React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!name) {

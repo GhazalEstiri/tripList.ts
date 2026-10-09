@@ -1,14 +1,20 @@
-import { useParams } from "react-router";
+import { NavLink, useParams } from "react-router";
 import { useState } from "react";
-import Navbar from "./Navbar";
+import Navbar from "./Navbar.js";
 import { UserRoundGroup, Wallet, MapPin } from "lucide-react";
-function TripDetail({ state, dispatch }) {
+import type { Dispatch } from "react";
+import type { State, Action, Trip,Expense } from "../Reducer/tripReducer.js";
+type TripDetail = {
+  state: State;
+  dispatch: Dispatch<Action>;
+};
+function TripDetail({ state, dispatch }:TripDetail) {
   const { id } = useParams();
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<number|null>();
   const [reason, setReason] = useState("");
   const [companion, setCompanion] = useState([""]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [editingExpense, setEditingExpense] = useState(null);
+  const [editingExpense, setEditingExpense] = useState<Expense|null>(null);
   const [filteredCategory, setFilteredCategory] = useState("");
   const [showUndo, setShowUndo] = useState(false);
 
@@ -16,13 +22,14 @@ function TripDetail({ state, dispatch }) {
   if (!trip) {
     return <p>Trip not found</p>;
   }
+  const tripId = trip.id
 
   function addExpense() {
     if (editingExpense) {
       dispatch({
         type: "EDIT_ITEM",
         payload: {
-          tripId: trip.id,
+          tripId: tripId,
           expenseId: editingExpense.id,
           category: selectedCategory,
           amount: Number(amount),
@@ -35,7 +42,7 @@ function TripDetail({ state, dispatch }) {
       dispatch({
         type: "ADD_EXPENSE",
         payload: {
-          tripId: trip.id,
+          tripId: tripId,
           category: selectedCategory,
           amount: Number(amount),
           reason: reason,
@@ -44,11 +51,12 @@ function TripDetail({ state, dispatch }) {
       });
     }
     setReason("");
-    setAmount("");
-    setCompanion("");
+    setAmount(null);
+    setCompanion([""]);
     setSelectedCategory("");
   }
-  function deleteItem(tripId, expenseId, amount) {
+  const budget =trip.budget
+  function deleteItem(tripId:number, expenseId:number, amount:number) {
     dispatch({
       type: "DELETE_ITEM",
 
@@ -56,7 +64,7 @@ function TripDetail({ state, dispatch }) {
         tripId: tripId,
         expenseId: expenseId,
         amount: amount,
-        budget: trip.budget,
+        budget:budget,
       },
     });
     setShowUndo(true);
@@ -64,7 +72,7 @@ function TripDetail({ state, dispatch }) {
       setShowUndo(false);
     }, 2000);
   }
-  function editeItem(expense) {
+  function editeItem(expense:Expense) {
     setEditingExpense(expense);
     setAmount(expense.amount);
     setCompanion(expense.companion);
@@ -76,7 +84,7 @@ function TripDetail({ state, dispatch }) {
     dispatch({
       type: "UNDO_ITEM",
     });
-    setShowUndo(false)
+    setShowUndo(false);
   }
 
   const filteredExpenses = trip.expenses.filter(
@@ -157,8 +165,8 @@ function TripDetail({ state, dispatch }) {
           <input
             type="number"
             placeholder="Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            value={amount??""}
+            onChange={(e) => setAmount(e.target.value===""? null:Number(e.target.value) )}
             className="w-full h-12 rounded-xl border border-[#dce5ec] bg-[#fbfcfd] pl-11 pr-4 text-sm outline-none focus:border-[#173c5c] transition"
           />
           <input
@@ -171,8 +179,8 @@ function TripDetail({ state, dispatch }) {
           <input
             type="text"
             placeholder="companion"
-            value={companion}
-            onChange={(e) => setCompanion(e.target.value)}
+            value={companion[0]??[]}
+            onChange={(e) => setCompanion([e.target.value])}
             className="w-full h-12 rounded-xl border border-[#dce5ec] bg-[#fbfcfd] pl-11 pr-4 text-sm outline-none focus:border-[#173c5c] transition"
           />
           <div className="w-full">

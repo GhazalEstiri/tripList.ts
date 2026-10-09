@@ -1,7 +1,7 @@
 // import { Link } from "react-router";
-import Navbar from "./Navbar";
-import Hero from "./Hero";
-import Footer from "./Footer";
+import Navbar from "./Navbar.js";
+import Hero from "./Hero.js";
+// import Footer from "./Footer.jsx";
 function Home() {
   // const searchCountry = country.filter((item) =>
   //   item.names.common.toLowerCase().includes(searchInput.toLowerCase()),

@@ -1,11 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.jsx";
-import Favorite from "./Context/Favorite.jsx";
-import AuthProvider from "./Context/AuthContext.jsx";
+import App from "./App.js";
+import Favorite from "./Context/Favorite.js";
+import AuthProvider from "./Context/AuthContext.js";
 
-createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
       <Favorite>

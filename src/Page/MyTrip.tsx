@@ -1,17 +1,29 @@
-import Navbar from "./Navbar";
-import { getCountry } from "../Services/Api";
-import { initialState, tripReducer } from "../Reducer/tripReducer";
+import Navbar from "./Navbar.js";
+import { getCountry } from "../Services/Api.js";
+import { initialState, tripReducer } from "../Reducer/tripReducer.js";
 import { useEffect, useState, useReducer } from "react";
 import { Link } from "react-router";
 import { UserRoundGroup, Wallet, Trash, Pencil } from "lucide-react";
+import type { Dispatch } from "react";
+import type { State, Action, Trip } from "../Reducer/tripReducer.js";
 // import { useNavigate, useParams, Link } from "react-router";
-function MyTrip({ state, dispatch }) {
-  const [country, setCountry] = useState([]);
+type Mytrip = {
+  state: State;
+  dispatch: Dispatch<Action>;
+};
+type CountryOption = {
+  name: string;
+};
+type Budget = {
+  budget: number;
+};
+function MyTrip({ state, dispatch }: Mytrip) {
+  const [country, setCountry] = useState<CountryOption[]>([]);
   const [selectedCountry, setSelectedcountry] = useState("");
   // const [selectedCategory, setSelectedCategory] = useState("");
   const [companion, setCompanion] = useState([""]);
-  const [budget, setBudget] = useState("");
-  const [editeCard, setEditeCard] = useState(null);
+  const [budget, setBudget] = useState<number|null>(null);
+  const [editeCard, setEditeCard] = useState<Trip | null>(null);
   const [showUndo, setShowUndo] = useState(false);
   // const navigate = useNavigate();
   // const { id } = useParams();
@@ -50,13 +62,13 @@ function MyTrip({ state, dispatch }) {
     setSelectedcountry("");
     // setSelectedCategory("");
     setCompanion([""]);
-    setBudget("");
+    setBudget(null);
     setEditeCard(null);
 
     // console.log("category:", selectedCategory);
   }
 
-  function deleteCard(tripId) {
+  function deleteCard(tripId: number) {
     dispatch({
       type: "DELETE_CARD",
       payload: tripId,
@@ -67,14 +79,15 @@ function MyTrip({ state, dispatch }) {
       setShowUndo(false);
     }, 2000);
   }
-  function editeCards(tripId) {
+  function editeCards(tripId: number) {
     const trip = state.trip.find((item) => item.id === tripId);
+    if (!trip) return;
     setEditeCard(trip);
     setSelectedcountry(trip.country);
     // setSelectedCategory(trip.category);
     setCompanion(trip.companion);
     setBudget(trip.budget);
-    document.getElementById("my_modal_1").showModal();
+    const modal = document.getElementById("my_modal_1") as HTMLDialogElement|null; modal?.showModal();
   }
 
   function undoTrip() {
@@ -113,7 +126,7 @@ function MyTrip({ state, dispatch }) {
           )}
           <button
             className="btn bg-[#144970] text-white text-lg rounded-xl p-5"
-            onClick={() => document.getElementById("my_modal_1").showModal()}
+            onClick={() =>{ const modal = document.getElementById("my_modal_1") as HTMLDialogElement|null; modal?.showModal()}}
           >
             <p
               className="
@@ -199,8 +212,8 @@ function MyTrip({ state, dispatch }) {
                   className="input join-item  w-full outline-none  rounded-2xl bg-[#fbfcfd] "
                   placeholder="budget"
                   type="number"
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
+                  value={budget??""}
+                  onChange={(e) => setBudget(e.target.value===""?null: Number(e.target.value))}
                 />
                 {/* <button className="btn join-item rounded-r-full">+</button> */}
               </div>
@@ -225,11 +238,11 @@ function MyTrip({ state, dispatch }) {
                     } else {
                       addTrip();
                     }
-                    document.getElementById("my_modal_1").close();
+                     const modal =document.getElementById("my_modal_1" ) as HTMLDialogElement; modal?.close();
                     setSelectedcountry("");
                     // setSelectedCategory("");
                     setCompanion([""]);
-                    setBudget("");
+                    setBudget(null);
                     setEditeCard(null);
                   }}
                 >

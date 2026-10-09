@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { loginContext } from "../Context/AuthContext";
-import Navbar from "./Navbar";
+import { loginContext } from "../Context/AuthContext.js";
+import Navbar from "./Navbar.js";
 
 import {
   CircleUserRound,

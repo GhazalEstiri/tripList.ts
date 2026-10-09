@@ -1,9 +1,31 @@
-import { useContext } from "react";
-import { FavoriteContext } from "../Context/Favorite";
+import React, { useContext } from "react";
+import { FavoriteContext } from "../Context/Favorite.js";
 import { Link } from "react-router";
 import { ChevronRight } from "lucide-react";
-import Navbar from "./Navbar";
-function FavePage(country) {
+import Navbar from "./Navbar.js";
+interface Country {
+  name: string;
+  flags: {
+    png: string;
+  };
+  latlng: [number, number];
+  region: string;
+  capital: string;
+  population: number;
+  area: number;
+  languages: {
+    name: string;
+  }[];
+  currencies: {
+    name: string;
+  }[];
+}
+// interface Favorite {
+//   favorite: Country[];
+//   addFavorite: (country: Country) => void;
+// }
+
+function FavePage() {
   const { favorite, addFavorite } = useContext(FavoriteContext);
   // console.log("first item:", favorite[0]);
   // console.log("country name:", favorite[0].name);
@@ -25,12 +47,17 @@ function FavePage(country) {
                   <div key={item.flags.png}>
                     <img src={item.flags.png} alt={item.name} />
                   </div>
-                <div className="flex flex-col justify-center items-baseline w-full gap-6 ">
-                    <Link to="/CountryDetail" key={item.name} state={item} className="line-clamp-1 text-center w-full">
-                      {item.name} 
+                  <div className="flex flex-col justify-center items-baseline w-full gap-6 ">
+                    <Link
+                      to="/CountryDetail"
+                      key={item.name}
+                      state={item}
+                      className="line-clamp-1 text-center w-full"
+                    >
+                      {item.name}
                     </Link>
 
-                  <div className=" flex justify-center items-center bg-[#E8F4FD] rounded-2xl p-2 text-sm text-[#1d4362]  mx-auto w-full">
+                    <div className=" flex justify-center items-center bg-[#E8F4FD] rounded-2xl p-2 text-sm text-[#1d4362]  mx-auto w-full">
                       More details <ChevronRight />
                     </div>
                   </div>

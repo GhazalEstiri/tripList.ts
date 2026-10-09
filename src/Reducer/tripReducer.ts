@@ -1,9 +1,94 @@
-const initialState = {
+const initialState:State = {
   trip: [],
   deletedExpense: null,
   deletedCard: null,
 };
-function tripReducer(state, action) {
+export type Action =
+  | {
+      type: "ADD_TRIP";
+      payload: {
+        id: number;
+        country: string;
+        budget: number;
+        expenses: Expense[];
+        companion: string[];
+        // amount:number;
+        totalBudget: number;
+      };
+    }
+  | {
+      type: "ADD_EXPENSE";
+      payload: {
+        tripId: number;
+        category: string;
+        amount: number;
+        reason: string;
+        companion: string[];
+      };
+    }
+  | {
+      type: "DELETE_CARD";
+      payload: number;
+    }
+  | {
+      type: "DELETE_ITEM";
+      payload: {
+        tripId: number;
+        expenseId: number;
+        // expense:Expense[];
+        amount: number;
+        budget: number;
+      };
+    }
+  | {
+      type: "EDIT_TRIP";
+      payload: {
+        tripId: number;
+        // category: string;
+        country: string;
+        companion: string[];
+        budget: number;
+      };
+    }
+  | {
+      type: "EDIT_ITEM";
+      payload: {
+        tripId: number;
+        expenseId: number;
+        category: string;
+        amount: number;
+        reason: string;
+        companion: string[];
+      };
+    }
+  | { type: "UNDO_ITEM"; }
+  | { type: "UNDO_CARD"; };
+export type Expense = {
+  id: number;
+  // tripId?:number;
+  category: string;
+  amount: number;
+  reason: string;
+  // expenseId: number;
+  companion: string[];
+};
+export type Trip = {
+  id: number;
+  budget: number;
+  expenses: Expense[];
+  country:string;
+  companion:string[];
+  totalBudget:number;
+};
+export type State = {
+  trip: Trip[];
+  deletedExpense: {
+    tripId: number;
+    expense: Expense;
+  } | null;
+  deletedCard: Trip | null;
+};
+function tripReducer(state: State, action: Action) {
   switch (action.type) {
     case "ADD_TRIP": {
       return {
@@ -38,13 +123,13 @@ function tripReducer(state, action) {
     }
     case "DELETE_CARD": {
       const deletedCard = state.trip.find((trip) => {
-        return trip.id === action.payload
+        return trip.id === action.payload;
       });
 
       return {
         ...state,
         trip: state.trip.filter((trip) => {
-          return trip.id !== action.payload
+          return trip.id !== action.payload;
         }),
         deletedCard: deletedCard,
       };
@@ -53,7 +138,7 @@ function tripReducer(state, action) {
       const tripToDelete = state.trip.find((trip) => {
         return trip.id === action.payload.tripId;
       });
-      const deletedExpense = tripToDelete.expenses.find((expense) => {
+      const deletedExpense = tripToDelete?.expenses.find((expense) => {
         return expense.id === action.payload.expenseId;
       });
       return {
@@ -72,7 +157,7 @@ function tripReducer(state, action) {
           return trip;
         }),
         deletedExpense: {
-          tripId: tripToDelete.id,
+          tripId: tripToDelete?.id,
           expense: deletedExpense,
         },
       };
@@ -84,7 +169,7 @@ function tripReducer(state, action) {
           if (trip.id === action.payload.tripId) {
             return {
               ...trip,
-              category: action.payload.category,
+              // category: action.payload.category,
               country: action.payload.country,
               companion: action.payload.companion,
               budget: action.payload.budget,
@@ -124,7 +209,7 @@ function tripReducer(state, action) {
       return {
         ...state,
         trip: state.trip.map((trip) => {
-          if (trip.id == state.deletedExpense.tripId) {
+          if (trip.id == state.deletedExpense?.tripId) {
             return {
               ...trip,
               budget: trip.budget - state.deletedExpense.expense.amount,
